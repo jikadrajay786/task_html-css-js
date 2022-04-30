@@ -1,0 +1,143 @@
+function mydate() {
+  var todayDate = new Date();
+  var month = todayDate.getMonth() + 1;
+  var year = todayDate.getUTCFullYear();
+  var tDate = todayDate.getDate();
+
+  if (month < 10) {
+    month = "0" + month;
+  }
+  if (tDate < 10) {
+    tDate = "0" + tDate;
+  }
+
+  var maxDate = year + "-" + month + "-" + tDate;
+  document.getElementById("dob").setAttribute("max", maxDate);
+}
+function validate() {
+  const n = validatename();
+  const d = validatdate();
+  const p = validatephone();
+  const c = validatecheck();
+  const e = validateemail();
+
+  //for name adding event onkeyup
+  let name = document.getElementById("eName");
+  name.addEventListener("keyup", () => {
+    validatename();
+  });
+
+  //for date adding event onkeyup
+  let dob = document.getElementById("dob");
+  dob.addEventListener("keyup", () => {
+    validatdate();
+  });
+
+  //for name adding event onkeyup
+  let email = document.getElementById("Email");
+  email.addEventListener("keyup", () => {
+    validateemail();
+  });
+
+  //for name adding event onkeyup
+  let phone = document.getElementById("Phone");
+  phone.addEventListener("keyup", () => {
+    validatephone();
+  });
+
+  if (n == true && d == true && p == true && c == true && e == true) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function validatename() {
+  let x = document.getElementById("eName").value;
+  let reg = /^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9]+$/;
+  /* Validate name*/
+  if (x.length == 0) {
+    document.getElementById("namevalid").innerHTML = "* Please enter name";
+    return false;
+  } else if (x.length < 4 || x.length > 20) {
+    document.getElementById("namevalid").innerHTML =
+      "* input length should be greater then 4 or less then 20";
+    return false;
+  } else if (!x.match(reg)) {
+    document.getElementById("namevalid").innerHTML = "* not valid format";
+    return false;
+  } else {
+    document.getElementById("namevalid").innerHTML = "";
+  }
+
+  return true;
+}
+
+function validatdate() {
+  /*Validate Date*/
+  var todayDate = new Date();
+  var month = todayDate.getMonth() + 1;
+  var year = todayDate.getUTCFullYear();
+  var tDate = todayDate.getDate();
+
+  if (month < 10) {
+    month = "0" + month;
+  }
+  if (tDate < 10) {
+    tDate = "0" + tDate;
+  }
+  var maxDate = year + "-" + month + "-" + tDate;
+  //document.getElementById("dob").setAttribute("max", maxDate);
+  //console.log(dob);
+  let dob = document.getElementById("dob").value;
+  if (dob.length == 0) {
+    document.getElementById("dobvalid").innerHTML = "* please select date";
+    return false;
+  } else {
+    document.getElementById("dobvalid").innerHTML = "";
+    return true;
+  }
+  return true;
+}
+
+function validateemail() {
+  /*Validate Email*/
+  let Email = document.getElementById("Email").value;
+  let vemail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  if (Email == "") {
+    document.getElementById("emailvalid").innerHTML = "* please enter email";
+    return false;
+  } else if (!Email.match(vemail)) {
+    document.getElementById("emailvalid").innerHTML = " enter valid email";
+    return false;
+  } else {
+    document.getElementById("emailvalid").innerHTML = "";
+  }
+  return true;
+}
+
+function validatephone() {
+  /*Validate Phone*/
+  let phone = document.getElementById("Phone").value;
+  //console.log(phone);
+
+  if (phone == "") {
+    document.getElementById("phonevalid").innerHTML = "";
+  } else {
+    if (!phone.match(/^[0-9]+$/)) {
+      document.getElementById("phonevalid").innerHTML = "* must be number";
+      return false;
+    } else if (phone.length > 10 || phone.length < 10) {
+      document.getElementById("phonevalid").innerHTML =
+        "* phone length must be 10 digit";
+      return false;
+    } else {
+      document.getElementById("phonevalid").innerHTML = "";
+    }
+  }
+  return true;
+}
+
+function validatecheck() {
+  return true;
+}

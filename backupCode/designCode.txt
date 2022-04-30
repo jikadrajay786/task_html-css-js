@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="mystyle.css">
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+        <script src="validation.js"></script>
+        <script src="crud.js"></script>
+    </head>
+<body>
+    <div class="container">
+        <div class="header">Employee</div>
+        <div class="border">
+            <div class="emphead">Add Employee</div>
+           
+            <form onclick="mydate()" onsubmit="event.preventDefault(); validate(); crud(); return true"  id="myform">
+               
+                <div class="flex-container">
+                    <div class="flex-item-left" ><label>Name: <label/></div>
+                    <div class="flex-item-rigth" ><input type="text" " name="eName" id="eName" placeholder="Enter name" />
+                    <span  id="namevalid" style="color: red;"></div>  
+                </div>
+                
+                <div class="flex-container">
+                    <div class="flex-item-left" ><label>Gender: <label/></div>
+                    <div class="flex-item-rigth" >
+                        <input type="radio" name="Gender" id="Gender" value="Male" checked>Male
+                        <input type="radio" name="Gender" id="Gender1" value="Female" />Female
+                    </div>  
+                </div>
+
+                <div class="flex-container">
+                    <div class="flex-item-left" ><label>Date of birth: <label/></div>
+                    <div class="flex-item-rigth" ><input type="date"  name="dob" id="dob" max="" />
+                        <span id="dobvalid" style="color: red;"> 
+                    </div>  
+                </div>
+
+                <div class="flex-container">
+                    <div class="flex-item-left" ><label>Email: <label/></div>
+                    <div class="flex-item-rigth" ><input type="text" name="Email" id="Email" placeholder="Enter email" />
+                        <span id="emailvalid" style="color: red;"> 
+                        </div>  
+                </div>
+
+                <div class="flex-container">
+                    <div class="flex-item-left" ><label>Phone: <label/></div>
+                    <div class="flex-item-rigth" ><input type="text" name="Phone"  id="Phone" placeholder="Enter phone" />
+                        <span id="phonevalid" style="color: red;"> 
+                    </div>  
+                </div>
+
+                <div class="flex-container">
+                    <div class="flex-item-left" style="align-self: flex-start;"><label>Hobbies: <label/></div>
+                    <div class="flex-item-rigth" >
+                        <input type="checkbox" name="Hobby[]" id="Hobby1" value="cricket"/>Cricket<br>
+                        <input type="checkbox" name="Hobby[]" id="Hobby2" value="playing"/>Playing<br>
+                        <input type="checkbox" name="Hobby[]" id="Hobby3" value="coding"/>Coding<br>
+                        <span id="hobbyvalid" style="color: red;"> 
+                    </div>  
+                </div>
+
+                <div class="flex-container">
+                    <div class="flex-item-left" ></div>
+                    <div class="flex-item-rigth" ><input class="button" type="submit" name="submit" value="Submit"/></div>  
+                </div>
+
+            </form>
+
+            </div>
+    </div>
+
+
+    <div class="container" id="basicTable">
+        <div class="header"> Basic </div>
+        <div class="border">
+            <div class="emphead">Employee Detail </div>
+        <div style="overflow-x: auto;" id="DataTable">
+        </div>
+    </div>
+    </div>
+
+    <div class="container" id="advanceTable">
+        <div class="header"> Advance </div>
+        <div class="border">
+            <div class="emphead">Employee Detail </div>
+        <div style="overflow-x: auto;" id="advanceDataTable">
+        </div>
+    </div>
+    </div>
+</body>
+</html>

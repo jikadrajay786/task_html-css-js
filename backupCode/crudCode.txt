@@ -1,0 +1,483 @@
+var isEdit = false;
+
+function uuidv4() {
+  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+    (
+      c ^
+      (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+    ).toString(16)
+  );
+}
+function crud() {
+  //console.log(!validate());
+  if (!validate()) {
+    alert("Empty Form Not Valid");
+  } else {
+    insert();
+  }
+}
+
+function insert() {
+  
+  var uniqueid=uuidv4();
+  var name = document.getElementById("eName").value;
+  var gender = document.getElementsByName("Gender");
+  if (gender[0].checked) {
+    var gen = gender[0].value;
+  } else {
+    var gen = gender[1].value;
+  }
+  var dob = document.getElementById("dob").value;
+  var email = document.getElementById("Email").value;
+  var phone = document.getElementById("Phone").value;
+  var hobby = document.getElementsByName("Hobby[]");
+  var h=[];
+  var len = hobby.length;
+
+  for (var i = 0; i < len; i++) {
+    if (hobby[i].checked) {
+      h.push(hobby[i].value);
+    }
+  }
+  var employee = {
+    id: uniqueid,
+    Name: name,
+    Gender: gen,
+    DOB: dob,
+    Email: email,
+    Phone: phone,
+    Hobby: h,
+  };
+
+  /*Insert data here */
+  if (typeof Storage != undefined) {
+    //console.log(uid);
+    if (isEdit == false) {
+      //console.log("jhjsh");
+      var tempdata = JSON.parse(localStorage.getItem("employee"));
+      //console.log(tempdata);
+      if (tempdata == null) {
+        let data = [employee];
+        localStorage.setItem("employee", JSON.stringify(data));
+      } else {
+        tempdata.push(employee);
+        localStorage.setItem("employee", JSON.stringify(tempdata));
+      }
+      createRow([employee]);
+      advanceRowCreation([employee]);
+      document.getElementById("basicTable").style.display="block";
+      document.getElementById("advanceTable").style.display="block";
+      //isEdit=true;
+    }
+    /*Update data here*/
+    else {
+        updatedEmp = {
+            id: uid,
+            Name: name,
+            Gender: gen,
+            DOB: dob,
+            Email: email,
+            Phone: phone,
+            Hobby: h,
+          };
+          //console.log(updatedEmp);
+      newarr = JSON.parse(localStorage.getItem("employee"));
+      index = newarr.findIndex((obj) => obj.id == uid);
+      console.log(index);
+      isEdit = false;
+      let table = document.getElementById("empTable");
+      if (index < 0) {} else {
+        newarr.splice(index,1,updatedEmp);
+        //console.log(newarr);
+        localStorage.setItem("employee", JSON.stringify(newarr));
+        //table.deleteRow(index+1);
+        let cur_row=document.getElementById(arr[index].id);
+        console.log(cur_row);
+        //console.log(updatedEmp.Name);
+        document.getElementById("empTable").rows[arr[index].id].cells.namedItem(0).innerText=updatedEmp.id;
+        document.getElementById("empTable").rows[arr[index].id].cells.namedItem(1).innerText=updatedEmp.Name;
+        document.getElementById("empTable").rows[arr[index].id].cells.namedItem(2).innerText=updatedEmp.Gender;
+        document.getElementById("empTable").rows[arr[index].id].cells.namedItem(3).innerText=updatedEmp.DOB;
+        document.getElementById("empTable").rows[arr[index].id].cells.namedItem(4).innerText=updatedEmp.Email;
+        document.getElementById("empTable").rows[arr[index].id].cells.namedItem(5).innerText=updatedEmp.Phone;
+        document.getElementById("empTable").rows[arr[index].id].cells.namedItem(6).innerText=updatedEmp.Hobby;
+
+        document.getElementById(uid+"id").innerText=updatedEmp.id;
+        document.getElementById(uid+"name").innerText=updatedEmp.Name;
+        document.getElementById(uid+"gender").innerText=updatedEmp.Gender;
+        document.getElementById(uid+"dob").innerText=updatedEmp.DOB;
+        document.getElementById(uid+"email").innerText=updatedEmp.Email;
+        document.getElementById(uid+"phone").innerText=updatedEmp.Phone;
+        document.getElementById(uid+"hobby").innerText=updatedEmp.Hobby;
+        //createRow([updatedEmp]);
+        //console.log(updatedEmp);
+      }
+    }
+  }
+  document.getElementById("myform").reset();
+}
+
+window.addEventListener("load", () => {
+  const allEmployee = JSON.parse(localStorage.getItem("employee"));
+  if(allEmployee=="")
+  {
+    document.getElementById("basicTable").style.display="none"
+    document.getElementById("advanceTable").style.display="none"
+  }
+    onlyheader();
+    createRow(allEmployee);
+
+    advanceHeaderCreation();
+    advanceRowCreation(allEmployee);
+  
+});
+
+function onlyheader() {
+  mybody = document.getElementById("DataTable");
+  mytable = document.createElement("table");
+  mytable.setAttribute("id", "empTable");
+  tableHead = document.createElement("thead");
+  mycurrent_row = document.createElement("tr");
+
+  mycurrent_cell = document.createElement("td");
+  mycurrent_cell.appendChild(document.createTextNode("ID"));
+
+  mycurrent_cell1 = document.createElement("td");
+  mycurrent_cell1.appendChild(document.createTextNode("Name"));
+
+  mycurrent_cell2 = document.createElement("td");
+  mycurrent_cell2.appendChild(document.createTextNode("Gender"));
+
+  mycurrent_cell3 = document.createElement("td");
+  mycurrent_cell3.appendChild(document.createTextNode("DOB"));
+
+  mycurrent_cell4 = document.createElement("td");
+  mycurrent_cell4.appendChild(document.createTextNode("E-mail"));
+
+  mycurrent_cell5 = document.createElement("td");
+  mycurrent_cell5.appendChild(document.createTextNode("Phone"));
+
+  mycurrent_cell6 = document.createElement("td");
+  mycurrent_cell6.appendChild(document.createTextNode("Hobby"));
+
+  mycurrent_cell7 = document.createElement("td");
+  mycurrent_cell7.appendChild(document.createTextNode("Action"));
+
+  mycurrent_row.appendChild(mycurrent_cell);
+  mycurrent_row.appendChild(mycurrent_cell1);
+  mycurrent_row.appendChild(mycurrent_cell2);
+  mycurrent_row.appendChild(mycurrent_cell3);
+  mycurrent_row.appendChild(mycurrent_cell4);
+  mycurrent_row.appendChild(mycurrent_cell5);
+  mycurrent_row.appendChild(mycurrent_cell6);
+  mycurrent_row.appendChild(mycurrent_cell7);
+
+  tableHead.appendChild(mycurrent_row);
+  mytable.appendChild(tableHead);
+  tableBody = document.createElement("tbody");
+  mytable.appendChild(tableBody);
+  mybody.appendChild(mytable);
+}
+
+function createRow(empData)
+ {
+   //console.log(empData);
+   if(empData!=null)
+   {
+        for (var j = 0; j < empData.length; j++) {
+
+          mycurrent_row = document.createElement("tr");
+          mycurrent_row.setAttribute("id",""+empData[j].id);
+          //mycurrent_row.setAttribute("onclick","getid('this')");
+         //mycurrent_row.addEventListener("click",()=>{getid(this);});
+          mycurrent_cell = document.createElement("td");
+          mycurrent_cell.setAttribute("id",0);
+          mycurrent_cell.appendChild(document.createTextNode(empData[j].id));
+    
+          mycurrent_cell1 = document.createElement("td");
+          mycurrent_cell1.setAttribute("id",1);
+          mycurrent_cell1.appendChild(document.createTextNode(empData[j].Name));
+    
+          mycurrent_cell2 = document.createElement("td");
+          mycurrent_cell2.setAttribute("id",2);
+          mycurrent_cell2.appendChild(document.createTextNode(empData[j].Gender));
+    
+          mycurrent_cell3 = document.createElement("td");
+          mycurrent_cell3.setAttribute("id",3);
+          mycurrent_cell3.appendChild(document.createTextNode(empData[j].DOB));
+    
+          mycurrent_cell4 = document.createElement("td");
+          mycurrent_cell4.setAttribute("id",4);
+          mycurrent_cell4.appendChild(document.createTextNode(empData[j].Email));
+    
+          mycurrent_cell5 = document.createElement("td");
+          mycurrent_cell5.setAttribute("id",5);
+          mycurrent_cell5.appendChild(document.createTextNode(empData[j].Phone));
+    
+          mycurrent_cell6 = document.createElement("td");
+          mycurrent_cell6.setAttribute("id",6);
+          mycurrent_cell6.appendChild(document.createTextNode(empData[j].Hobby));
+    
+          mycurrent_cell7 = document.createElement("td");
+          mycurrent_cell7.setAttribute("id",7);
+          a = document.createElement("a");
+          linkText = document.createTextNode("Edit");
+          a.appendChild(linkText);
+          //a.id="edit";
+          a.className = "edit";
+          a.title = "Edit";
+          a.setAttribute("id", empData[j].id);
+          a.addEventListener("click", function () {
+            edit(this.id,true);
+          });
+    
+          a1 = document.createElement("a");
+          linkText = document.createTextNode("Remove");
+          a1.appendChild(linkText);
+          //a1.id="remove";
+          a1.title = "Remove";
+          a1.className = "remove";
+          a1.setAttribute("id", empData[j].id);
+          a1.addEventListener("click", function () {
+            del(this.id,mycurrent_row.id,true);
+            return false;
+          });
+
+          mycurrent_cell7.appendChild(a);
+          mycurrent_cell7.appendChild(a1);    
+          mycurrent_row.appendChild(mycurrent_cell);
+          mycurrent_row.appendChild(mycurrent_cell1);
+          mycurrent_row.appendChild(mycurrent_cell2);
+          mycurrent_row.appendChild(mycurrent_cell3);
+          mycurrent_row.appendChild(mycurrent_cell4);
+          mycurrent_row.appendChild(mycurrent_cell5);
+          mycurrent_row.appendChild(mycurrent_cell6);
+          mycurrent_row.appendChild(mycurrent_cell7);
+    
+          tableBody.appendChild(mycurrent_row);
+        }
+      }
+      else
+      {
+        document.getElementById("basicTable").style.display="none";
+        //alert("There is no reecord to show");
+      }
+}
+
+function del(dataId) {
+  //let table = document.getElementById("empTable");
+  document.getElementById(dataId+"id").remove();
+  document.getElementById(dataId+"name").remove();
+  document.getElementById(dataId+"gender").remove();
+  document.getElementById(dataId+"dob").remove();
+  document.getElementById(dataId+"email").remove();
+  document.getElementById(dataId+"phone").remove();
+  document.getElementById(dataId+"hobby").remove();
+  document.getElementById(dataId+"action").remove();
+  var arr = new Array();
+  arr = JSON.parse(localStorage.getItem("employee"));
+  index = arr.findIndex((obj) => obj.id == dataId);
+  if(arr!="")
+  {
+    if (index < 0) {
+      alert(index +"not allow here");
+    } else {
+      document.getElementById(arr[index].id).remove();
+      arr.splice(index, 1);
+      //table.deleteRow(index + 1);
+      //console.log(document.getElementById(index));//.remove();
+      //console.log(document.getElementById(rowId));
+      if(arr=="")
+      {
+        document.getElementById("basicTable").style.display="none"
+        document.getElementById("advanceTable").style.display="none";
+      }
+    }
+    localStorage.setItem("employee", JSON.stringify(arr));
+  }
+
+}
+
+function edit(id) {
+
+  isEdit = true;
+  uid = id;
+  let empform = document.getElementById("myform");
+  arr = JSON.parse(localStorage.getItem("employee"));
+  index = arr.findIndex((obj) => obj.id == id);
+  console.log(index);
+
+  empform.eName.value = arr[index].Name;
+  empform.Gender.value = arr[index].Gender;
+  empform.dob.value = arr[index].DOB;
+  empform.Email.value = arr[index].Email;
+  empform.Phone.value = arr[index].Phone;
+
+  harr = arr[index].Hobby;
+
+  empform.Hobby1.checked = false;
+  empform.Hobby2.checked = false;
+  empform.Hobby3.checked = false;
+  for (let i = 0; i < harr.length; i++) {
+    if (empform.Hobby1.value == harr[i]) {
+      empform.Hobby1.checked = true;
+    } else if (empform.Hobby2.value == harr[i]) {
+      empform.Hobby2.checked = true;
+    } else if (empform.Hobby3.value == harr[i]) {
+      empform.Hobby3.checked = true;
+    }
+  }
+}
+
+/*Advance table*/
+function advanceHeaderCreation() {
+    
+  advancemybody = document.getElementById("advanceDataTable");
+  advancemytable = document.createElement("table");
+  advancemytable.setAttribute("id", "empTable");
+  advancetableBody = document.createElement("tbody");
+  advancemytable.appendChild(advancetableBody);
+
+
+  Amycurrent_row1 = document.createElement("tr");
+  Amycurrent_cell = document.createElement("td");
+  Amycurrent_cell.appendChild(document.createTextNode("ID"));
+
+  Amycurrent_row2 = document.createElement("tr");
+  Amycurrent_cell1 = document.createElement("td");
+  Amycurrent_cell1.appendChild(document.createTextNode("Name"));
+
+  Amycurrent_row3 = document.createElement("tr");
+  Amycurrent_cell2 = document.createElement("td");
+  Amycurrent_cell2.appendChild(document.createTextNode("Gender"));
+  
+  Amycurrent_row4 = document.createElement("tr");
+  Amycurrent_cell3 = document.createElement("td");
+  Amycurrent_cell3.appendChild(document.createTextNode("DOB"));
+
+  Amycurrent_row5 = document.createElement("tr");
+  Amycurrent_cell4 = document.createElement("td");
+  Amycurrent_cell4.appendChild(document.createTextNode("E-mail"));
+
+  Amycurrent_row6 = document.createElement("tr");
+  Amycurrent_cell5 = document.createElement("td");
+  Amycurrent_cell5.appendChild(document.createTextNode("Phone"));
+
+  Amycurrent_row7 = document.createElement("tr");
+  Amycurrent_cell6 = document.createElement("td");
+  Amycurrent_cell6.appendChild(document.createTextNode("Hobby"));
+
+  Amycurrent_row8 = document.createElement("tr");
+  Amycurrent_cell7 = document.createElement("td");
+  Amycurrent_cell7.appendChild(document.createTextNode("Action"));
+
+  Amycurrent_row1.appendChild(Amycurrent_cell);
+  Amycurrent_row2.appendChild(Amycurrent_cell1);
+  Amycurrent_row3.appendChild(Amycurrent_cell2);
+  Amycurrent_row4.appendChild(Amycurrent_cell3);
+  Amycurrent_row5.appendChild(Amycurrent_cell4);
+  Amycurrent_row6.appendChild(Amycurrent_cell5);
+  Amycurrent_row7.appendChild(Amycurrent_cell6);
+  Amycurrent_row8.appendChild(Amycurrent_cell7);
+
+  advancetableBody.appendChild(Amycurrent_row1);
+  advancetableBody.appendChild(Amycurrent_row2);
+  advancetableBody.appendChild(Amycurrent_row3);
+  advancetableBody.appendChild(Amycurrent_row4);
+  advancetableBody.appendChild(Amycurrent_row5);
+  advancetableBody.appendChild(Amycurrent_row6);
+  advancetableBody.appendChild(Amycurrent_row7);
+  advancetableBody.appendChild(Amycurrent_row8);
+
+  advancemytable.appendChild(advancetableBody);
+
+  
+  advancemybody.appendChild(advancemytable);
+}
+
+function advanceRowCreation(empData)
+{
+ if(empData!=null)
+ {
+      for (var j = 0; j < empData.length; j++) {
+
+       Arow = document.createElement("tr");
+       Acell=document.createElement("td");
+       Acell.setAttribute("id",empData[j].id+"id");
+       
+       Acell.appendChild(document.createTextNode(empData[j].id));
+ 
+       Arow1 = document.createElement("tr");
+       Acell1=document.createElement("td");
+       Acell1.setAttribute("id",empData[j].id+"name");
+       Acell1.appendChild(document.createTextNode(empData[j].Name));
+ 
+       Arow2 = document.createElement("tr");
+       Acell2=document.createElement("td");
+       Acell2.setAttribute("id",empData[j].id+"gender");
+       Acell2.appendChild(document.createTextNode(empData[j].Gender));
+ 
+       Arow3 = document.createElement("tr");
+       Acell3=document.createElement("td");
+       Acell3.setAttribute("id",empData[j].id+"dob");
+       Acell3.appendChild(document.createTextNode(empData[j].DOB));
+ 
+       Arow4 = document.createElement("tr");
+       Acell4=document.createElement("td");
+       Acell4.setAttribute("id",empData[j].id+"email");
+       Acell4.appendChild(document.createTextNode(empData[j].Email));
+ 
+       Arow5 = document.createElement("tr");
+       Acell5=document.createElement("td");
+       Acell5.setAttribute("id",empData[j].id+"phone");
+       Acell5.appendChild(document.createTextNode(empData[j].Phone));
+ 
+       Arow6 = document.createElement("tr");
+       Acell6=document.createElement("td");
+       Acell6.setAttribute("id",empData[j].id+"hobby");
+       Acell6.appendChild(document.createTextNode(empData[j].Hobby));
+ 
+       Arow7 = document.createElement("tr");
+       Acell7=document.createElement("td");
+       Acell7.setAttribute("id",empData[j].id+"action");
+       a = document.createElement("a");
+       linkText = document.createTextNode("Edit");
+       a.appendChild(linkText);
+       //a.id="edit";
+       a.className = "edit";
+       a.title = "Edit";
+       a.setAttribute("id", empData[j].id);
+       a.addEventListener("click", function () {
+         edit(this.id);
+       });
+ 
+       a1 = document.createElement("a");
+       linkText = document.createTextNode("Remove");
+       a1.appendChild(linkText);
+       //a1.id="remove";
+       a1.title = "Remove";
+       a1.className = "remove";
+       a1.setAttribute("id", empData[j].id);
+       a1.addEventListener("click", function () {
+         del(this.id);
+       });
+
+       Acell7.appendChild(a);
+       Acell7.appendChild(a1);
+
+       //row1.appendChild(cell1);
+       Amycurrent_row1.appendChild(Acell);
+       Amycurrent_row2.appendChild(Acell1);
+       Amycurrent_row3.appendChild(Acell2);
+       Amycurrent_row4.appendChild(Acell3);
+       Amycurrent_row5.appendChild(Acell4);
+       Amycurrent_row6.appendChild(Acell5);
+       Amycurrent_row7.appendChild(Acell6);
+       Amycurrent_row8.appendChild(Acell7);
+      }
+    }
+    else
+    {
+      document.getElementById("advanceTable").style.display="none";
+    }
+}
